@@ -4,9 +4,10 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
-import repository.RestaurantRepository;
 import model.Menu;
+import repository.RestaurantRepository;
 
 public class Server {
     public static void main(String[] args) {
@@ -39,15 +40,17 @@ public class Server {
                 output.println("Olá, " + nomeCliente + "!");
 
                 var menu = repository.getAll();
-                var listIds = new ArrayList<Integer>();
+                List<Integer> listIds = new ArrayList<>();
+
                 // Passo 5: Mostrar os itens disponíveis no menu
                 output.println("Itens disponíveis no menu:\n");
                 for (Menu m : menu) {
                     listIds.add(m.getId());
-                    output.println(String.format("Nº: %d - Item: %s com o valor de %f", m.getId(), m.getNome(), m.getPreco()));
+                    output.println(String.format("Nº: %d - Item: %s com o valor de R$ %.2f", m.getId(), m.getNome(),
+                            m.getPreco()));
                 }
 
-                output.println("Por favor, digite a opção desejada: ");
+                output.println("Por favor, digite a opção desejada ou 'encerrar' para finalizar o pedido: ");
 
                 // Passo 6: Aguardar e processar os pedidos do cliente
                 double valorTotal = 0.0;
@@ -55,18 +58,32 @@ public class Server {
                 boolean continuarPedido = true;
 
                 while (continuarPedido) {
-                    // Receber o pedido do cliente
-                    String pedido = input.readLine();
+                    String opcao = input.readLine();
 
-                    // Verificar se o cliente deseja continuar ou encerrar o pedido
-                    if (pedido.equalsIgnoreCase("encerrar")) {
+                    // Verificar se o cliente deseja encerrar o pedido
+                    if (opcao.equalsIgnoreCase("encerrar")) {
                         continuarPedido = false;
                     } else {
-                        // Processar o pedido
-                        // ...
+                        try {
+                            int itemId = Integer.parseInt(opcao);
 
-                        // Adicionar o pedido ao valor total e ao registro do pedido
-                        // ...
+                            // Verificar se o ID do item é válido
+                            if (listIds.contains(itemId)) {
+                                // Encontrar o item pelo ID
+                                Menu item = menu.stream().filter(m -> m.getId() == itemId).findFirst().orElse(null);
+
+                                if (item != null) {
+                                    // Adicionar o item ao valor total e ao registro do pedido
+                                    valorTotal += item.getPreco();
+                                    pedidoCliente.append(String.format("- %s (R$ %.2f)\n", item.getNome(),
+                                            item.getPreco()));
+                                }
+                            } else {
+                                output.println("Opção inválida. Por favor, digite novamente.");
+                            }
+                        } catch (NumberFormatException e) {
+                            output.println("Opção inválida. Por favor, digite novamente.");
+                        }
                     }
                 }
 
@@ -74,7 +91,7 @@ public class Server {
 
                 // Passo 8: Mostrar o resultado do pedido
                 output.println("Pedido realizado:\n" + pedidoCliente.toString());
-                output.println("Valor total: " + valorTotal + " BRL");
+                output.println("Valor total: R$ " + String.format("%.2f", valorTotal));
 
                 // Passo 9: Receber confirmação do pedido do cliente
                 output.println("Por favor, confirme o seu pedido (sim/não):");
@@ -95,8 +112,7 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
@@ -104,10 +120,6 @@ public class Server {
                     e.printStackTrace();
                 }
             }
-
-
         }
     }
 }
-
-

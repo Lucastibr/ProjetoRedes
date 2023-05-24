@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-
     public static void main(String[] args) {
         String serverAddress = "localhost";
         int serverPort = 8080;
@@ -37,19 +36,21 @@ public class Client {
 
             // Passo 5: Receber itens disponíveis no menu
             String line;
-            while ((line = input.readLine()) != null) {
+            while (!(line = input.readLine()).isEmpty()) {
                 System.out.println(line);
             }
 
             // Passo 6: Solicitar e enviar pedidos ao servidor
             boolean continuarPedido = true;
+            StringBuilder pedidoCliente = new StringBuilder();
+
             while (continuarPedido) {
                 System.out.println("Por favor, digite um item do menu ou 'encerrar' para finalizar o pedido:");
                 String pedido = scanner.nextLine();
                 output.println(pedido);
 
                 if (pedido.equalsIgnoreCase("encerrar")) {
-                    continuarPedido = false;
+                    break; // Sai do loop quando o pedido for "encerrar"
                 }
             }
 
@@ -70,6 +71,5 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
