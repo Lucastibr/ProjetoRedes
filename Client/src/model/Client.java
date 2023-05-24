@@ -35,8 +35,10 @@ public class Client {
             System.out.println(saudacaoServidor);
 
             // Passo 5: Receber itens disponíveis no menu
+            System.out.println("Itens disponíveis no menu:\n");
             String line;
-            while (!(line = input.readLine()).isEmpty()) {
+
+            while ((line = input.readLine()).isEmpty()) {
                 System.out.println(line);
             }
 
@@ -53,6 +55,7 @@ public class Client {
                     break; // Sai do loop quando o pedido for "encerrar"
                 }
             }
+
 
             // Passo 8: Receber e exibir resultado do pedido
             String resultadoPedido = input.readLine();

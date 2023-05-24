@@ -87,8 +87,6 @@ public class Server {
                     }
                 }
 
-                // Passo 7: Calcular o valor total do pedido
-
                 // Passo 8: Mostrar o resultado do pedido
                 output.println("Pedido realizado:\n" + pedidoCliente.toString());
                 output.println("Valor total: R$ " + String.format("%.2f", valorTotal));
