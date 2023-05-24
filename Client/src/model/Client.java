@@ -25,51 +25,55 @@ public class Client {
             String mensagemBoasVindas = input.readLine();
             System.out.println(mensagemBoasVindas);
 
-            // Passo 2: Enviar nome do cliente
-            System.out.println(input.readLine()); // Imprimir a pergunta do servidor
+            // Passo 2: Enviar confirmação ao servidor
+            output.println("Confirmar");
+
+            // Passo 3: Receber pergunta do servidor
+            String perguntaServidor = input.readLine();
+            System.out.println(perguntaServidor);
+
+            // Passo 4: Enviar nome do cliente
             String nomeCliente = scanner.nextLine();
             output.println(nomeCliente);
 
-            // Passo 4: Receber saudação do servidor
+            // Passo 5: Receber saudação do servidor
             String saudacaoServidor = input.readLine();
             System.out.println(saudacaoServidor);
 
-            // Passo 5: Receber itens disponíveis no menu
-            System.out.println("Itens disponíveis no menu:\n");
+            // Passo 7: Receber itens disponíveis no menu
             String line;
-
-            while ((line = input.readLine()).isEmpty()) {
+            while (!(line = input.readLine()).isEmpty()) {
                 System.out.println(line);
             }
 
-            // Passo 6: Solicitar e enviar pedidos ao servidor
-            boolean continuarPedido = true;
-            StringBuilder pedidoCliente = new StringBuilder();
-
-            while (continuarPedido) {
-                System.out.println("Por favor, digite um item do menu ou 'encerrar' para finalizar o pedido:");
-                String pedido = scanner.nextLine();
-                output.println(pedido);
-
-                if (pedido.equalsIgnoreCase("encerrar")) {
-                    break; // Sai do loop quando o pedido for "encerrar"
-                }
+            while (!(line = input.readLine()).isEmpty()) {
+                System.out.println(line);
             }
 
+            // Passo 9: Solicitar e enviar pedidos ao servidor
+            boolean continuarPedido = true;
+            String pedido = scanner.nextLine();
 
-            // Passo 8: Receber e exibir resultado do pedido
+            while (continuarPedido) {
+                output.println(pedido);
+                // Aguardar confirmação do servidor
+                System.out.println(input.readLine());
+                pedido = scanner.nextLine();
+            }
+
+            // Passo 10: Receber resultado do pedido
             String resultadoPedido = input.readLine();
             System.out.println(resultadoPedido);
 
-            // Passo 9: Confirmar o pedido
-            System.out.println(input.readLine()); // Imprimir a pergunta do servidor
-            String confirmacaoPedido = scanner.nextLine();
-            output.println(confirmacaoPedido);
+            // Passo 11: Enviar confirmação ao servidor
+            output.println("Confirmar");
 
-            // Passo 10: Receber mensagem de agradecimento ou reiniciar o fluxo
+            // Passo 12: Receber mensagem de agradecimento ou reiniciar o fluxo
             String mensagemAgradecimento = input.readLine();
             System.out.println(mensagemAgradecimento);
 
+            // Fechar recursos
+            socket.close();
             System.out.println("Conexão com o servidor encerrada.");
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,13 +1,15 @@
 package view;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
-import model.Menu;
 import repository.RestaurantRepository;
+import model.Menu;
 
 public class Server {
     public static void main(String[] args) {
@@ -30,83 +32,64 @@ public class Server {
                 // Passo 1: Enviar mensagem de boas-vindas ao cliente
                 output.println("Bem-vindo ao restaurante!");
 
-                // Passo 2: Perguntar o nome do cliente
-                output.println("Por favor, digite o seu nome:");
+                // Passo 2: Aguardar confirmação do cliente
+                input.readLine();
 
-                // Passo 3: Receber o nome do cliente
+                // Passo 3: Perguntar o nome do cliente
+                output.println("Por favor, digite seu nome:");
                 String nomeCliente = input.readLine();
 
-                // Passo 4: Armazenar o nome e chamar o cliente pelo nome
+                // Passo 5:
                 output.println("Olá, " + nomeCliente + "!");
 
                 var menu = repository.getAll();
-                List<Integer> listIds = new ArrayList<>();
-
-                // Passo 5: Mostrar os itens disponíveis no menu
+                var listIds = new ArrayList<Integer>();
+                // Passo 5: Enviar itens disponíveis no menu
                 output.println("Itens disponíveis no menu:\n");
                 for (Menu m : menu) {
                     listIds.add(m.getId());
-                    output.println(String.format("Nº: %d - Item: %s com o valor de R$ %.2f", m.getId(), m.getNome(),
+                    output.println(String.format("Nº: %d - Item: %s com o valor de %f", m.getId(), m.getNome(),
                             m.getPreco()));
                 }
 
-                output.println("Por favor, digite a opção desejada ou 'encerrar' para finalizar o pedido: ");
-
-                // Passo 6: Aguardar e processar os pedidos do cliente
-                double valorTotal = 0.0;
-                StringBuilder pedidoCliente = new StringBuilder();
+                // Passo 7: Solicitar e processar os pedidos do cliente
                 boolean continuarPedido = true;
 
                 while (continuarPedido) {
-                    String opcao = input.readLine();
+                    //Passo 6:
+                    output.println("Por favor, digite um item do menu ou 'encerrar' para finalizar o pedido:");
 
-                    // Verificar se o cliente deseja encerrar o pedido
-                    if (opcao.equalsIgnoreCase("encerrar")) {
+                    output.println("");
+                    // Solicitar pedido ao cliente
+
+                    String pedido = input.readLine();
+
+                    // Verificar se o cliente deseja continuar ou encerrar o pedido
+                    if (pedido.equalsIgnoreCase("encerrar")) {
                         continuarPedido = false;
                     } else {
-                        try {
-                            int itemId = Integer.parseInt(opcao);
+                        // Processar o pedido
+                        // ...
 
-                            // Verificar se o ID do item é válido
-                            if (listIds.contains(itemId)) {
-                                // Encontrar o item pelo ID
-                                Menu item = menu.stream().filter(m -> m.getId() == itemId).findFirst().orElse(null);
-
-                                if (item != null) {
-                                    // Adicionar o item ao valor total e ao registro do pedido
-                                    valorTotal += item.getPreco();
-                                    pedidoCliente.append(String.format("- %s (R$ %.2f)\n", item.getNome(),
-                                            item.getPreco()));
-                                }
-                            } else {
-                                output.println("Opção inválida. Por favor, digite novamente.");
-                            }
-                        } catch (NumberFormatException e) {
-                            output.println("Opção inválida. Por favor, digite novamente.");
-                        }
+                        // Adicionar o pedido ao valor total e ao registro do pedido
+                        // ...
                     }
                 }
 
-                // Passo 8: Mostrar o resultado do pedido
-                output.println("Pedido realizado:\n" + pedidoCliente.toString());
-                output.println("Valor total: R$ " + String.format("%.2f", valorTotal));
+                // Passo 8: Calcular o valor total do pedido
 
-                // Passo 9: Receber confirmação do pedido do cliente
-                output.println("Por favor, confirme o seu pedido (sim/não):");
-                String confirmacaoPedido = input.readLine();
+                // Passo 9: Enviar resultado do pedido para o cliente
+                output.println("Pedido realizado:\n" + "Itens do pedido" + "\nValor total: " + "valorTotal" + " BRL");
 
-                // Passo 10: Enviar mensagem de agradecimento ou reiniciar o fluxo
-                if (confirmacaoPedido.equalsIgnoreCase("sim")) {
-                    output.println("Pedido confirmado! Obrigado por escolher nosso restaurante.");
-                } else {
-                    output.println("O pedido foi cancelado. Por favor, refaça seu pedido.");
-                    // Reiniciar o fluxo
-                    continue;
-                }
+                // Passo 10: Aguardar confirmação do cliente
+                input.readLine();
+
+                // Passo 11: Enviar mensagem de agradecimento ou reiniciar o fluxo
+                output.println("Obrigado por utilizar nosso serviço, " + nomeCliente + "!");
 
                 // Fechar recursos
                 clientSocket.close();
-                System.out.println("Conexão com o cliente encerrada: " + clientSocket.getInetAddress().getHostAddress());
+                System.out.println("Cliente desconectado: " + clientSocket.getInetAddress().getHostAddress());
             }
         } catch (IOException e) {
             e.printStackTrace();
