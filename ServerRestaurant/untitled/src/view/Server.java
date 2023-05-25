@@ -53,6 +53,8 @@ public class Server {
                 }
 
                 // Passo 7: Solicitar e processar os pedidos do cliente
+                double valorTotal = 0.0;
+                StringBuilder pedidoCliente = new StringBuilder();
                 boolean continuarPedido = true;
 
                 while (continuarPedido) {
@@ -68,11 +70,26 @@ public class Server {
                     if (pedido.equalsIgnoreCase("encerrar")) {
                         continuarPedido = false;
                     } else {
-                        // Processar o pedido
-                        // ...
+                        try {
+                            int itemId = Integer.parseInt(pedido);
 
-                        // Adicionar o pedido ao valor total e ao registro do pedido
-                        // ...
+                            // Verificar se o ID do item é válido
+                            if (listIds.contains(itemId)) {
+                                // Encontrar o item pelo ID
+                                Menu item = menu.stream().filter(m -> m.getId() == itemId).findFirst().orElse(null);
+
+                                if (item != null) {
+                                    // Adicionar o item ao valor total e ao registro do pedido
+                                    valorTotal += item.getPreco();
+                                    pedidoCliente.append(String.format("- %s (R$ %.2f)\n", item.getNome(),
+                                            item.getPreco()));
+                                }
+                            } else {
+                                output.println("Opção inválida. Por favor, digite novamente.");
+                            }
+                        } catch (NumberFormatException e) {
+                            output.println("Opção inválida. Por favor, digite novamente.");
+                        }
                     }
                 }
 

@@ -55,10 +55,16 @@ public class Client {
             String pedido = scanner.nextLine();
 
             while (continuarPedido) {
-                output.println(pedido);
-                // Aguardar confirmação do servidor
-                System.out.println(input.readLine());
-                pedido = scanner.nextLine();
+                if(pedido.equals("encerrar")){
+                    output.println(pedido);
+                    continuarPedido = false;
+                }
+                else{
+                    output.println(pedido);
+                    // Aguardar confirmação do servidor
+                    System.out.println(input.readLine());
+                    pedido = scanner.nextLine();
+                }
             }
 
             // Passo 10: Receber resultado do pedido
