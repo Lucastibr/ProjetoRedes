@@ -20,8 +20,8 @@ public class RestaurantRepository {
 
     public List<Menu> getAll() {
 
-        String sql = "SELECT m.Id, m.Name, m.Price, c.Name as categoria From menus m "
-                + "Inner Join categorias c ON c.Id = m.categoria_id";
+        String sql = "SELECT m.Id, m.Name, m.Price, c.Nome as categoria From menu m "
+                + "Inner Join categorias c ON c.Id = m.category_id";
 
         List<Menu> menu = new ArrayList<Menu>();
 

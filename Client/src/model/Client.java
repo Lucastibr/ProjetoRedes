@@ -54,29 +54,25 @@ public class Client {
             boolean continuarPedido = true;
             String pedido = scanner.nextLine();
 
-            while (continuarPedido) {
+            while (true) {
                 if(pedido.equals("encerrar")){
                     output.println(pedido);
-                    continuarPedido = false;
+                    break;
                 }
                 else{
                     output.println(pedido);
                     // Aguardar confirmação do servidor
                     System.out.println(input.readLine());
+                    System.out.println(input.readLine());
+                    System.out.println(input.readLine());
                     pedido = scanner.nextLine();
                 }
             }
 
-            // Passo 10: Receber resultado do pedido
-            String resultadoPedido = input.readLine();
-            System.out.println(resultadoPedido);
-
-            // Passo 11: Enviar confirmação ao servidor
-            output.println("Confirmar");
-
-            // Passo 12: Receber mensagem de agradecimento ou reiniciar o fluxo
-            String mensagemAgradecimento = input.readLine();
-            System.out.println(mensagemAgradecimento);
+            String result;
+            while ((result = input.readLine()) != null){
+                System.out.println(result);
+            }
 
             // Fechar recursos
             socket.close();

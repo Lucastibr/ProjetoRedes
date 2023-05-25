@@ -18,7 +18,7 @@ public class Server {
 
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Servidor do restaurante iniciado na porta " + port);
+            System.out.println("Servidor da Padinhos`s Lanchonete iniciado na porta " + port);
             var repository = new RestaurantRepository();
 
             while (true) {
@@ -30,7 +30,7 @@ public class Server {
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
 
                 // Passo 1: Enviar mensagem de boas-vindas ao cliente
-                output.println("Bem-vindo ao restaurante!");
+                output.println("Bem-vindo a Padinhos`s Lanchonete!");
 
                 // Passo 2: Aguardar confirmação do cliente
                 input.readLine();
@@ -45,30 +45,31 @@ public class Server {
                 var menu = repository.getAll();
                 var listIds = new ArrayList<Integer>();
                 // Passo 5: Enviar itens disponíveis no menu
-                output.println("Itens disponíveis no menu:\n");
+                output.println("Abaixo, você verá os itens disponíveis no menu:\n");
                 for (Menu m : menu) {
                     listIds.add(m.getId());
-                    output.println(String.format("Nº: %d - Item: %s com o valor de %f", m.getId(), m.getNome(),
+                    output.println(String.format("Nº: %d - Item: %s com o valor de (R$ %.2f)", m.getId(), m.getNome(),
                             m.getPreco()));
                 }
 
                 // Passo 7: Solicitar e processar os pedidos do cliente
                 double valorTotal = 0.0;
                 StringBuilder pedidoCliente = new StringBuilder();
-                boolean continuarPedido = true;
 
-                while (continuarPedido) {
+                while (true) {
                     //Passo 6:
-                    output.println("Por favor, digite um item do menu ou 'encerrar' para finalizar o pedido:");
+                    output.println("Por favor, digite o número do item do menu ou 'encerrar' para finalizar o pedido:");
 
-                    output.println("");
+                    if(valorTotal <= 0){
+                        output.println("");
+                    }
                     // Solicitar pedido ao cliente
 
                     String pedido = input.readLine();
 
                     // Verificar se o cliente deseja continuar ou encerrar o pedido
                     if (pedido.equalsIgnoreCase("encerrar")) {
-                        continuarPedido = false;
+                        break;
                     } else {
                         try {
                             int itemId = Integer.parseInt(pedido);
@@ -83,6 +84,11 @@ public class Server {
                                     valorTotal += item.getPreco();
                                     pedidoCliente.append(String.format("- %s (R$ %.2f)\n", item.getNome(),
                                             item.getPreco()));
+
+                                    valorTotal += item.getPreco();
+
+                                    output.println(String.format("Você escolheu o item- %s no valor de (R$ %.2f)\n", item.getNome(),
+                                            item.getPreco()));
                                 }
                             } else {
                                 output.println("Opção inválida. Por favor, digite novamente.");
@@ -93,13 +99,7 @@ public class Server {
                     }
                 }
 
-                // Passo 8: Calcular o valor total do pedido
-
-                // Passo 9: Enviar resultado do pedido para o cliente
-                output.println("Pedido realizado:\n" + "Itens do pedido" + "\nValor total: " + "valorTotal" + " BRL");
-
-                // Passo 10: Aguardar confirmação do cliente
-                input.readLine();
+                output.println("Total do Pedido:" + pedidoCliente);
 
                 // Passo 11: Enviar mensagem de agradecimento ou reiniciar o fluxo
                 output.println("Obrigado por utilizar nosso serviço, " + nomeCliente + "!");
