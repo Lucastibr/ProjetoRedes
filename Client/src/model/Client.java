@@ -64,8 +64,10 @@ public class Client {
                     // Aguardar confirmação do servidor
                     var mensagem = input.readLine();
                     System.out.println(mensagem);
-                    input.readLine();
                     System.out.println(input.readLine());
+                    if(!mensagem.contains("Opção inválida.")){
+                        System.out.println(input.readLine());
+                    }
                     pedido = scanner.nextLine();
                 }
             }
@@ -79,7 +81,8 @@ public class Client {
             socket.close();
             System.out.println("Conexão com o servidor encerrada.");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Te falar amigo, como você quer trabalhar na arquitetura cliente/servidor " +
+                    "sem o servidor estar disponível? \uD83E\uDD10 ");
         }
     }
 }

@@ -41,8 +41,15 @@ public class Server {
                 output.println("Por favor, digite seu nome:");
                 String nomeCliente = input.readLine();
 
-                // Passo 4:
-                output.println("Olá, " + nomeCliente + "!");
+                var validaNome = validarNomes(nomeCliente);
+
+                if(validaNome == ""){
+                    // Passo 4:
+                    output.println("Olá, " + nomeCliente + "!");
+                }
+                else{
+                    output.println(validaNome);
+                }
 
                 //Buscando os itens do BD
                 var menu = repository.getAll();
@@ -60,11 +67,12 @@ public class Server {
                 double valorTotal = 0.0;
                 StringBuilder pedidoCliente = new StringBuilder();
                 Integer itensSelecionados = 0;
+                Boolean selectedIndisponibleItem = false;
 
                 while (true) {
                     output.println("Por favor, digite o número do item do menu ou 'encerrar' para finalizar o pedido:");
 
-                    if(valorTotal <= 0){
+                    if(valorTotal <= 0 && !selectedIndisponibleItem){
                             output.println("");
                     }
 
@@ -80,6 +88,7 @@ public class Server {
 
                             // Verificar se o ID do item é válido
                             if (listIds.contains(itemId)) {
+                                selectedIndisponibleItem = false;
                                 // Encontrar o item pelo ID
                                 Menu item = menu.stream().filter(m -> m.getId() == itemId).findFirst().orElse(null);
 
@@ -95,9 +104,11 @@ public class Server {
                                     itensSelecionados++;
                                 }
                             } else {
-                                output.println("Opção inválida. Por favor, digite novamente o número que está disponível no item!");
+                                selectedIndisponibleItem = true;
+                                output.println("Opção inválida. Por favor, digite novamente o número que está disponível no menu!");
                             }
                         } catch (NumberFormatException e) {
+                            selectedIndisponibleItem = true;
                             output.println("Opção inválida. Por favor, digite novamente somente o número do item!.");
                         }
                     }
@@ -107,7 +118,7 @@ public class Server {
 
                 // Passo 7: Enviar mensagem de agradecimento
                 output.println("Obrigado por utilizar nosso serviço, " + nomeCliente + "! \n" +
-                        "Os padinho`s Lucas, Ruan e Helton agradecem a preferência!");
+                        "Os padinho`s Lucas Pereira, Ruan Torres e Helton Rangel agradecem a preferência!");
 
                 // Passo 8 :Fechar a conexão com o cliente
                 clientSocket.close();
@@ -131,14 +142,16 @@ public class Server {
         String mensagem = "";
         switch (nome.toLowerCase(Locale.ROOT)){
             case "geraldo":
-                mensagem = String.format("Olha aí galera, o %s achou que ia entrar no sistema e não fazer nenhum pedido! Larga de ser murrinha!", nome);
+                mensagem = String.format("Bem vindo %s, espero que você não faça nenhuma caquinha digitando algo " +
+                        "que não deve pra tirar nossos pontos! \uD83D\uDE06 \uD83D\uDE06 \uD83D\uDE06", nome);
                 break;
             case "professor":
-                mensagem = String.format("Olha %s, até que eu aceitaria não fazer nenhum pedido, mas os 4 pontos são importantes! Seleciona o item aê Pô!", nome);
+                mensagem = String.format("Olha %s, seja bem vindo! Melhor professor dessa faculdade! " +
+                        "\uD83E\uDD10 \uD83E\uDD10 \uD83E\uDD10 \uD83E\uDD10", nome);
                 break;
             case "professor geraldo":
-                mensagem = String.format("Ruan disse que tá chateado com você, porque além de nos avaliar na Fematec com toda aquela pressão, você " +
-                        "não quer gastar um centavo no nosso sistema!", nome);
+                mensagem = String.format("Ruan disse que tá chateado com você, porque além de nos avaliar na Fematec com toda aquela pressão, \n " +
+                        "Agora ficamos receosos ao fazer esse trabalho \uD83D\uDE02 \uD83D\uDE02 \uD83D\uDE02 \uD83D\uDE02", nome);
                 break;
         }
 
