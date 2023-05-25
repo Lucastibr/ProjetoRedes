@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import model.Extensions;
 import repository.RestaurantRepository;
 import model.Menu;
 
@@ -39,32 +41,34 @@ public class Server {
                 output.println("Por favor, digite seu nome:");
                 String nomeCliente = input.readLine();
 
-                // Passo 5:
+                // Passo 4:
                 output.println("Olá, " + nomeCliente + "!");
 
+                //Buscando os itens do BD
                 var menu = repository.getAll();
                 var listIds = new ArrayList<Integer>();
-                // Passo 5: Enviar itens disponíveis no menu
+
+                // Passo 5: Enviar para o cliente os itens disponíveis no menu
                 output.println("Abaixo, você verá os itens disponíveis no menu:\n");
                 for (Menu m : menu) {
                     listIds.add(m.getId());
-                    output.println(String.format("Nº: %d - Item: %s com o valor de (R$ %.2f)", m.getId(), m.getNome(),
+                    output.println(String.format("Número do Item: %d - Nome: %s com o valor de (R$ %.2f)", m.getId(), m.getNome(),
                             m.getPreco()));
                 }
 
-                // Passo 7: Solicitar e processar os pedidos do cliente
+                // Passo 6: Solicitar e processar os pedidos do cliente
                 double valorTotal = 0.0;
                 StringBuilder pedidoCliente = new StringBuilder();
+                Integer itensSelecionados = 0;
 
                 while (true) {
-                    //Passo 6:
                     output.println("Por favor, digite o número do item do menu ou 'encerrar' para finalizar o pedido:");
 
                     if(valorTotal <= 0){
-                        output.println("");
+                            output.println("");
                     }
-                    // Solicitar pedido ao cliente
 
+                    // Solicitar pedido ao cliente
                     String pedido = input.readLine();
 
                     // Verificar se o cliente deseja continuar ou encerrar o pedido
@@ -85,26 +89,27 @@ public class Server {
                                     pedidoCliente.append(String.format("- %s (R$ %.2f)\n", item.getNome(),
                                             item.getPreco()));
 
-                                    valorTotal += item.getPreco();
-
-                                    output.println(String.format("Você escolheu o item- %s no valor de (R$ %.2f)\n", item.getNome(),
+                                    output.println(String.format("Você escolheu o item- %s no valor de (R$ %.2f)\n ", item.getNome(),
                                             item.getPreco()));
+
+                                    itensSelecionados++;
                                 }
                             } else {
-                                output.println("Opção inválida. Por favor, digite novamente.");
+                                output.println("Opção inválida. Por favor, digite novamente o número que está disponível no item!");
                             }
                         } catch (NumberFormatException e) {
-                            output.println("Opção inválida. Por favor, digite novamente.");
+                            output.println("Opção inválida. Por favor, digite novamente somente o número do item!.");
                         }
                     }
                 }
 
-                output.println("Total do Pedido:" + pedidoCliente);
+                output.println(String.format("Aqui estão os itens do seu pedido: \n %s - Valor Total: (R$ %.2f)", pedidoCliente, valorTotal));
 
-                // Passo 11: Enviar mensagem de agradecimento ou reiniciar o fluxo
-                output.println("Obrigado por utilizar nosso serviço, " + nomeCliente + "!");
+                // Passo 7: Enviar mensagem de agradecimento
+                output.println("Obrigado por utilizar nosso serviço, " + nomeCliente + "! \n" +
+                        "Os padinho`s Lucas, Ruan e Helton agradecem a preferência!");
 
-                // Fechar recursos
+                // Passo 8 :Fechar a conexão com o cliente
                 clientSocket.close();
                 System.out.println("Cliente desconectado: " + clientSocket.getInetAddress().getHostAddress());
             }
@@ -119,5 +124,24 @@ public class Server {
                 }
             }
         }
+    }
+
+    private static String validarNomes(String nome){
+
+        String mensagem = "";
+        switch (nome.toLowerCase(Locale.ROOT)){
+            case "geraldo":
+                mensagem = String.format("Olha aí galera, o %s achou que ia entrar no sistema e não fazer nenhum pedido! Larga de ser murrinha!", nome);
+                break;
+            case "professor":
+                mensagem = String.format("Olha %s, até que eu aceitaria não fazer nenhum pedido, mas os 4 pontos são importantes! Seleciona o item aê Pô!", nome);
+                break;
+            case "professor geraldo":
+                mensagem = String.format("Ruan disse que tá chateado com você, porque além de nos avaliar na Fematec com toda aquela pressão, você " +
+                        "não quer gastar um centavo no nosso sistema!", nome);
+                break;
+        }
+
+        return mensagem;
     }
 }

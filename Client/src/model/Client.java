@@ -40,7 +40,7 @@ public class Client {
             String saudacaoServidor = input.readLine();
             System.out.println(saudacaoServidor);
 
-            // Passo 7: Receber itens disponíveis no menu
+            // Passo 6: Receber itens disponíveis no menu
             String line;
             while (!(line = input.readLine()).isEmpty()) {
                 System.out.println(line);
@@ -50,7 +50,7 @@ public class Client {
                 System.out.println(line);
             }
 
-            // Passo 9: Solicitar e enviar pedidos ao servidor
+            // Passo 7: Solicitar e enviar pedidos ao servidor
             boolean continuarPedido = true;
             String pedido = scanner.nextLine();
 
@@ -62,8 +62,9 @@ public class Client {
                 else{
                     output.println(pedido);
                     // Aguardar confirmação do servidor
-                    System.out.println(input.readLine());
-                    System.out.println(input.readLine());
+                    var mensagem = input.readLine();
+                    System.out.println(mensagem);
+                    input.readLine();
                     System.out.println(input.readLine());
                     pedido = scanner.nextLine();
                 }
