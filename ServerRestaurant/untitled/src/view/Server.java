@@ -66,7 +66,6 @@ public class Server {
                 // Passo 6: Solicitar e processar os pedidos do cliente
                 double valorTotal = 0.0;
                 StringBuilder pedidoCliente = new StringBuilder();
-                Integer itensSelecionados = 0;
                 Boolean selectedIndisponibleItem = false;
 
                 while (true) {
@@ -100,8 +99,6 @@ public class Server {
 
                                     output.println(String.format("Você escolheu o item- %s no valor de (R$ %.2f)\n ", item.getNome(),
                                             item.getPreco()));
-
-                                    itensSelecionados++;
                                 }
                             } else {
                                 selectedIndisponibleItem = true;

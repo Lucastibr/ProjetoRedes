@@ -72,6 +72,7 @@ public class Client {
                 }
             }
 
+            //Passo 8: Mostrar o fim da compra
             String result;
             while ((result = input.readLine()) != null){
                 System.out.println(result);
